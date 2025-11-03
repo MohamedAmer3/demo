@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetinaGuard - AI Retinal Screening</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e4a8a">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+</head>
+<body>
+
+    <nav id="main-navbar" class="main-navbar">
+        <div class="navbar-content">
+            <div class="navbar-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>RetinaGuard</span>
+            </div>
+            
+            <div class="navbar-menu" id="navbar-menu">
+                <a href="#" data-page="welcome-screen" class="nav-link active">Home</a>
+                <a href="#" data-page="features-page" class="nav-link">Features</a>
+                <a href="#" data-page="how-it-works-page" class="nav-link">How it works</a>
+                <a href="#" data-page="faq-page" class="nav-link">FAQs</a>
+                <a href="#" data-page="pricing-page" class="nav-link">Pricing</a>
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <button id="nav-get-started" class="nav-btn">Get Started</button>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="features-page" class="screen marketing-page">
+        <div class="marketing-container">
+            <div class="marketing-hero">
+                <h1 class="marketing-title">Powerful Features for Rural Healthcare</h1>
+                <p class="marketing-subtitle">RetinaGuard combines cutting-edge AI with offline-first design to bring world-class diabetic retinopathy screening to remote areas.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon offline">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <h3>Offline AI Diagnosis</h3>
+                    <p>Get instant triage results even without internet connection. Our ONNX-powered AI runs directly on your device.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon xai">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <h3>XAI Heatmap Analysis</h3>
+                    <p>Visual explanations show exactly where the AI detected abnormalities, helping clinicians understand and trust the diagnosis.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon camera">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </div>
+                    <h3>Easy Camera Capture</h3>
+                    <p>One-tap retinal imaging using your device's camera. No expensive equipment needed.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon cloud">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Cloud Sync</h3>
+                    <p>Automatically sync patient data with specialists when online. Seamless collaboration between rural clinics and urban hospitals.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon secure">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>All patient data stays private. Offline processing means sensitive health information never leaves the device unnecessarily.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon fast">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get results in seconds, not days. Instant offline triage followed by specialist confirmation when needed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="how-it-works-page" class="screen marketing-page">
+        <div class="marketing-container">
+            <div class="marketing-hero">
+                <h1 class="marketing-title">How RetinaGuard Works</h1>
+                <p class="marketing-subtitle">Simple 3-step process for accurate diabetic retinopathy screening</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Capture Retinal Image</h3>
+                    <p class="step-description">Multiple ways to input your patient data:</p>
+                    <ul class="step-list">
+                        <li>Take a photo using device camera</li>
+                        <li>Upload existing retinal images</li>
+                        <li>Works with any standard fundus camera</li>
+                    </ul>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Instant AI Analysis</h3>
+                    <p class="step-description">Our advanced AI system:</p>
+                    <ul class="step-list">
+                        <li>Processes images in under 2 seconds</li>
+                        <li>Detects DR severity levels (None, Mild, Moderate, Severe)</li>
+                        <li>Works completely offline - no internet needed</li>
+                        <li>Provides confidence scores for each diagnosis</li>
+                    </ul>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Specialist Review & Action</h3>
+                    <p class="step-description">Get expert confirmation:</p>
+                    <ul class="step-list">
+                        <li>View XAI heatmap showing areas of concern</li>
+                        <li>Sync to cloud for specialist review</li>
+                        <li>Receive detailed diagnostic reports</li>
+                        <li>Save to patient records for tracking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="supported-topics">
+                <h2>Supported Diagnosis Levels</h2>
+                <div class="topics-grid">
+                    <div class="topic-category">
+                        <h4>DR Classifications</h4>
+                        <ul>
+                            <li>No DR (Normal)</li>
+                            <li>Mild DR</li>
+                            <li>Moderate DR</li>
+                            <li>Severe DR</li>
+                            <li>Proliferative DR</li>
+                        </ul>
+                    </div>
+                    <div class="topic-category">
+                        <h4>Analysis Features</h4>
+                        <ul>
+                            <li>Microaneurysms Detection</li>
+                            <li>Hemorrhage Identification</li>
+                            <li>Exudate Analysis</li>
+                            <li>Vessel Abnormalities</li>
+                            <li>Macular Edema</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="faq-page" class="screen marketing-page">
+        <div class="marketing-container">
+            <div class="marketing-hero">
+                <h1 class="marketing-title">Frequently Asked Questions</h1>
+                <p class="marketing-subtitle">Find answers to common questions about RetinaGuard</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is RetinaGuard?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>RetinaGuard is an AI-powered Progressive Web App (PWA) designed for diabetic retinopathy screening in resource-limited settings. It combines offline AI diagnosis with cloud-based specialist analysis to provide accessible, accurate eye care.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is RetinaGuard free to use?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>RetinaGuard offers multiple pricing tiers including a free plan for basic screening. See our Pricing page for detailed plan comparisons and features.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How accurate is the AI diagnosis?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our AI model has been trained on thousands of retinal images and achieves over 90% accuracy in detecting diabetic retinopathy. The offline triage provides instant results, which are then confirmed by specialist review when online.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Does it work without internet?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! RetinaGuard's core AI diagnosis works completely offline using ONNX Runtime. After the first visit, all app files and the AI model are cached on your device. Internet is only needed for syncing with specialists and accessing cloud features.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What devices are supported?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>RetinaGuard works on any modern device with a camera and web browser: Android phones (5.0+), iPhones (iOS 11.3+), tablets, and desktop computers. No app store download required - just visit the website and install.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is patient data secure?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely. All data is encrypted, and offline processing means sensitive health information stays on your device. Cloud sync only occurs when you explicitly save cases. We comply with healthcare data protection standards.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I use RetinaGuard for multiple patients?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! RetinaGuard is designed for clinics screening multiple patients daily. Each screening is saved with a unique patient ID and case number for easy tracking and review.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I get specialist review for my cases?</h3>
+                        <span class="faq-toggle">›</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>After capturing an image and receiving the offline diagnosis, click "Get Specialist Analysis" when online. The image is sent to our cloud AI which generates an XAI heatmap. Cases can then be reviewed by specialist ophthalmologists in the Specialist Queue.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pricing-page" class="screen marketing-page">
+        <div class="marketing-container">
+            <div class="marketing-hero">
+                <h1 class="marketing-title">Choose the Best Plan for You</h1>
+                <p class="marketing-subtitle">Flexible pricing plans tailored to your clinic's needs</p>
+            </div>
+
+            <div class="pricing-toggle">
+                <button class="toggle-btn active" data-plan="monthly">Monthly</button>
+                <button class="toggle-btn" data-plan="yearly">Yearly <span class="discount-badge">Save 50%</span></button>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3 class="plan-name">Free</h3>
+                    <div class="plan-price">
+                        <span class="price">$0</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <p class="plan-total">Total $0 /year</p>
+                    <ul class="plan-features">
+                        <li class="included">50 screenings /month</li>
+                        <li class="included">5 screenings /day</li>
+                        <li class="excluded">XAI heatmap analysis</li>
+                        <li class="included">Offline AI diagnosis</li>
+                        <li class="excluded">Cloud storage</li>
+                        <li class="excluded">Priority support</li>
+                    </ul>
+                    <button class="plan-btn">Sign up for free</button>
+                </div>
+
+                <div class="pricing-card recommended">
+                    <div class="recommended-badge">Recommended</div>
+                    <h3 class="plan-name">Pro</h3>
+                    <div class="plan-price">
+                        <span class="price-old">$99</span>
+                        <span class="price">$49</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <p class="plan-total">Total $588 /year</p>
+                    <ul class="plan-features">
+                        <li class="included">Unlimited screenings /month</li>
+                        <li class="included">No daily limit</li>
+                        <li class="included">XAI heatmap analysis</li>
+                        <li class="included">Offline AI diagnosis</li>
+                        <li class="included">Cloud storage unlimited</li>
+                        <li class="included">Priority support</li>
+                    </ul>
+                    <button class="plan-btn primary">Choose plan</button>
+                </div>
+
+                <div class="pricing-card">
+                    <h3 class="plan-name">Clinic</h3>
+                    <div class="plan-price">
+                        <span class="price-old">$199</span>
+                        <span class="price">$99</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <p class="plan-total">Total $1,188 /year</p>
+                    <ul class="plan-features">
+                        <li class="included">Unlimited screenings /month</li>
+                        <li class="included">Multiple clinicians</li>
+                        <li class="included">XAI heatmap analysis</li>
+                        <li class="included">Offline AI diagnosis</li>
+                        <li class="included">Cloud storage unlimited</li>
+                        <li class="included">Dedicated support</li>
+                        <li class="included">Training & onboarding</li>
+                    </ul>
+                    <button class="plan-btn">Choose plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="welcome-screen" class="screen marketing-page"> <div class="landing-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </div>
+                <h1 class="app-title">RetinaGuard</h1>
+                <p class="app-subtitle">AI-Powered Diabetic Retinopathy Screening</p>
+            </div>
+            
+            <div class="role-selection">
+                <button id="login-btn" class="role-btn clinician-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    LOG IN
+                </button>
+                
+                <button id="signup-btn" class="role-btn specialist-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    SIGN UP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-screen" class="screen">
+        <div class="auth-container">
+            <button class="back-icon-auth" onclick="showScreen('welcome-screen')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            
+            <div class="auth-content">
+                <div class="auth-header">
+                    <div class="logo-icon-small">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to continue</p>
+                </div>
+                
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">LOG IN</button>
+                    
+                    <div class="auth-switch">
+                        Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a>
+                    </div>
+                </form>
+                
+                <div id="login-error" class="error-msg hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="signup-screen" class="screen">
+        <div class="auth-container">
+            <button class="back-icon-auth" onclick="showScreen('welcome-screen')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            
+            <div class="auth-content">
+                <div class="auth-header">
+                    <div class="logo-icon-small">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h2 class="auth-title">Create Account</h2>
+                    <p class="auth-subtitle">Join RetinaGuard today</p>
+                </div>
+                
+                <form id="signup-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-role">I am a...</label>
+                        <select id="signup-role" required>
+                            <option value="">Select your role</option>
+                            <option value="clinician">Clinician</option>
+                            <option value="specialist">Specialist</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Create a password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" placeholder="Confirm your password" required>
+                    </div>
+                    
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the Terms of Service and Privacy Policy</label>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">SIGN UP</button>
+                    
+                    <div class="auth-switch">
+                        Already have an account? <a href="#" id="switch-to-login">Log In</a>
+                    </div>
+                </form>
+                
+                <div id="signup-error" class="error-msg hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="role-selection-screen" class="screen">
+        <div class="landing-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </div>
+                <h1 class="app-title">RetinaGuard</h1>
+                <p class="welcome-user">Welcome, <span id="user-name">User</span></p>
+            </div>
+            
+            <div class="role-selection">
+                <button id="clinician-role-btn" class="role-btn clinician-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    I AM A CLINICIAN
+                </button>
+                
+                <button id="specialist-role-btn" class="role-btn specialist-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    I AM A SPECIALIST
+                </button>
+            </div>
+            
+            <button id="logout-btn" class="logout-link">Log Out</button>
+        </div>
+    </div>
+
+    <div id="clinician-dashboard" class="screen">
+        <div class="gradient-header">
+            <div class="header-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </div>
+            <h2 class="header-title">RetinaGuard</h2>
+            <h3 class="header-subtitle">Clinician Dashboard</h3>
+        </div>
+        
+        <div class="dashboard-content">
+            <button id="start-screening-btn" class="main-action-card">
+                <div class="card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </div>
+                <span>START NEW PATIENT SCREENING</span>
+            </button>
+            
+            <div class="dashboard-actions">
+                <div class="action-card">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e4a8a" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Patient History</span>
+                </div>
+                
+                <div class="action-card">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e4a8a" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="patient-scan-screen" class="screen">
+        <div class="gradient-header small">
+            <button class="back-icon" onclick="showScreen('clinician-dashboard')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+            <h2 class="scan-title">RetinaGuard Patient Scan</h2>
+        </div>
+        
+        <div class="scan-content">
+            <div id="camera-section">
+                <input type="file" accept="image/*" capture="environment" id="camera-input" style="display: none;">
+                <button id="camera-capture-btn" class="capture-card">
+                    <div class="capture-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#1e4a8a" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </div>
+                    <span>TAP TO CAPTURE<br>EYE IMAGE</span>
+                </button>
+                <p class="privacy-note">Your patient's days private and offline.</p>
+            </div>
+
+            <div id="image-comparison-section" class="hidden">
+                <div class="comparison-container">
+                    <div class="comparison-box">
+                        <img id="original-image" alt="Original scan">
+                        <p class="comparison-label">Original Image</p>
+                    </div>
+                    <div class="comparison-box" id="heatmap-box">
+                        <img id="heatmap-image" alt="XAI Heatmap">
+                        <p class="comparison-label">XAI Heatmap</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 id="analysis-header" class="hidden">Analysis Results</h3>
+            
+            <div id="offline-result-card" class="result-card hidden">
+                <div class="result-header">
+                    <span>OFFLINE TRIAGE RESULT</span>
+                    <svg class="result-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <p id="offline-result-text" class="result-value">Result will appear here...</p>
+            </div>
+
+            <div id="specialist-result-card" class="result-card hidden">
+                <div class="result-header">
+                    <span>SPECIALIST ANALYSIS</span>
+                    <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e4a8a" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+                <p id="specialist-result-text" class="result-value">Result will appear here...</p>
+            </div>
+
+            <button id="get-specialist-btn" class="gradient-btn hidden">GET SPECIALIST ANALYSIS</button>
+            <button id="save-patient-btn" class="gradient-btn hidden">SAVE TO PATIENT FILE</button>
+            
+            <div id="save-success" class="success-toast hidden">✅ Case saved successfully!</div>
+        </div>
+    </div>
+
+    <div id="specialist-queue-screen" class="screen">
+        <div class="gradient-header">
+            <h2 class="queue-title">Specialist Review Queue</h2>
+        </div>
+        
+        <div class="queue-content">
+            <div id="loading-queue" class="loading-text">Loading cases...</div>
+            <div id="case-queue-list"></div>
+            <div id="no-cases-msg" class="hidden info-msg">No cases yet. Start screening patients!</div>
+        </div>
+    </div>
+
+    <div id="specialist-case-detail" class="screen">
+        <div class="gradient-header small">
+            <button class="back-icon" onclick="showScreen('specialist-queue-screen')">←</button>
+            <h2 class="scan-title" id="case-detail-title">Case #1024</h2>
+        </div>
+        
+        <div class="detail-content">
+            <h3 class="section-title">Specialist Case Review</h3>
+            
+            <div class="detail-comparison">
+                <div class="detail-box">
+                    <h4 class="detail-label">Original Image</h4>
+                    <img id="detail-original-image" class="detail-img" alt="Original scan">
+                    <p class="detail-caption">WARNING<br>Result will appear</p>
+                </div>
+                <div class="detail-box urgent-box">
+                    <div class="urgent-tag">URGENT</div>
+                    <h4 class="detail-label">XAI Heatmap Image</h4>
+                    <img id="detail-heatmap-image" class="detail-img" alt="XAI heatmap">
+                    <p class="detail-caption">Status: In Afft</p>
+                </div>
+            </div>
+
+            <div class="diagnosis-box">
+                <h3>AI-Flag: <span id="detail-diagnosis">SEVERE</span></h3>
+            </div>
+
+            <div class="detail-actions">
+                <button class="approve-btn">APPROVE DIAGNOSIS</button>
+                <button class="reject-btn">REJECT AND COMMENT</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
